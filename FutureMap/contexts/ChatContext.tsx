@@ -167,8 +167,8 @@ export function ChatProvider({ children }: ChatProviderProps) {
       const assistantMessage: ChatMessage = {
         id: `assistant-${Date.now()}`,
         role: 'assistant',
-        content: data.response,
-        timestamp: data.timestamp,
+        content: typeof data.response === 'string' ? data.response : JSON.stringify(data.response),
+        timestamp: data.timestamp || new Date().toISOString(),
       }
 
       setMessages(prev => [...prev, assistantMessage])

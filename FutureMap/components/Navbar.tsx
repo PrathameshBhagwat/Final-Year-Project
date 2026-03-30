@@ -141,9 +141,9 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-gradient-to-r from-neon-cyan to-neon-pink rounded-full flex items-center justify-center">
-              <span className="text-space-dark font-bold text-sm">CA</span>
+              <span className="text-space-dark font-bold text-sm">FM</span>
             </div>
-            <span className="text-white font-bold text-xl">Career Advisor</span>
+            <span className="text-white font-bold text-xl">Future Map</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -308,12 +308,12 @@ export default function Navbar() {
                     onClick={(e) => {
                       e.preventDefault()
                       e.stopPropagation()
-                      console.log('👤 User dropdown clicked:', profile?.first_name || user.email)
+                      console.log('👤 User dropdown clicked:', profile?.full_name || user.email)
                       // The dropdown will show on hover anyway, but this ensures it works on click too
                     }}
                   >
                     <User className="w-4 h-4" />
-                    <span>{profile?.first_name || user.email?.split('@')[0] || 'User'}</span>
+                    <span>{profile?.full_name || user.email?.split('@')[0] || 'User'}</span>
                   </button>
                   
                   <div className="absolute right-0 mt-2 w-48 bg-space-dark border border-gray-700 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
@@ -514,7 +514,7 @@ export default function Navbar() {
             
             {!loading && user && profile ? (
               <div className="pt-4 border-t border-gray-700 space-y-4">
-                <div className="text-white">{translations.dashboard.welcome.replace('!', '')}, {profile.first_name}!</div>
+                <div className="text-white">{translations.dashboard.welcome.replace('!', '')}, {profile.full_name}!</div>
                 <div className="text-sm text-gray-400">{user.email}</div>
                 <Link
                   href="/profile"

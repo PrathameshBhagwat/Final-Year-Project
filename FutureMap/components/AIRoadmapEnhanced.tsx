@@ -45,6 +45,7 @@ interface CareerRoadmap {
   title: string
   description: string
   career_goal: string
+  careerGoal: string
   current_level: 'beginner' | 'intermediate' | 'advanced'
   duration_months: number
   roadmap_data: {
@@ -171,7 +172,7 @@ export default function AIRoadmapEnhanced() {
   const [selectedRoadmap, setSelectedRoadmap] = useState<CareerRoadmap | null>(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const headerRef = useRef(null)
-  const isHeaderInView = useInView(headerRef, { threshold: 0.1 })
+  const isHeaderInView = useInView(headerRef, { once: true })
   
   const [formData, setFormData] = useState<RoadmapGenerationForm>({
     careerGoal: '',
@@ -249,7 +250,7 @@ export default function AIRoadmapEnhanced() {
       console.log('✅ Roadmap generated successfully:', data.roadmap.id)
       setRoadmaps(prev => [data.roadmap, ...prev])
       setShowGenerator(false)
-      setSelectedRoadmap(data.roadmap)
+      setSelectedRoadmap({ ...data.roadmap, careerGoal: data.roadmap.career_goal })
       toast.success('🎉 AI roadmap generated successfully!')
       
       // Reset form
@@ -537,7 +538,7 @@ export default function AIRoadmapEnhanced() {
                             whileTap={{ scale: 0.9 }}
                             onClick={(e) => {
                               e.stopPropagation()
-                              setSelectedRoadmap(roadmap)
+                              setSelectedRoadmap({ ...roadmap, careerGoal: roadmap.career_goal })
                             }}
                             className="p-2 text-gray-400 hover:text-neon-cyan transition-colors rounded-lg hover:bg-neon-cyan/10"
                           >
@@ -613,11 +614,11 @@ export default function AIRoadmapEnhanced() {
                       >
                         <span className="flex items-center bg-black/30 rounded-lg px-3 py-1">
                           <Target className="w-4 h-4 mr-2 text-neon-cyan" />
-                          {selectedRoadmap.careerGoal}
+                          {selectedRoadmap.career_goal}
                         </span>
                         <span className="flex items-center bg-black/30 rounded-lg px-3 py-1">
                           <Clock className="w-4 h-4 mr-2 text-neon-purple" />
-                          {selectedRoadmap.duration} months
+                          {selectedRoadmap.duration_months} months
                         </span>
                         <span className="flex items-center bg-black/30 rounded-lg px-3 py-1">
                           <BarChart3 className="w-4 h-4 mr-2 text-neon-pink" />
@@ -717,7 +718,7 @@ export default function AIRoadmapEnhanced() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 }}
                   >
-                    <label className="block text-white font-semibold mb-3 flex items-center">
+                    <label className="flex text-white font-semibold mb-3 items-center">
                       <Target className="w-5 h-5 mr-2 text-neon-cyan" />
                       Career Goal
                     </label>

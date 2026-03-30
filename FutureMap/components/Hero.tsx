@@ -75,7 +75,7 @@ const Hero = () => {
             className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight"
           >
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-neon-pink to-neon-purple text-glow">
-              {translations?.hero?.title || 'Your Personalized Career & College Guide'}
+              {translations?.hero?.title || 'AI-Powered Personalized Learning & Career Guidance'}
             </span>
           </motion.h1>
 
@@ -121,35 +121,6 @@ const Hero = () => {
                 <span>{translations?.hero?.ctaLearn || 'Learn How It Works'}</span>
               </motion.button>
             </>
-          </motion.div>
-
-          {/* Stats or Trust Indicators */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.8 }}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-8 pt-16 max-w-3xl mx-auto"
-          >
-            {[
-              { number: '10K+', label: translations?.hero?.stats?.studentsGuided || 'Students Guided' },
-              { number: '500+', label: translations?.hero?.stats?.careerPaths || 'Career Paths' },
-              { number: '1000+', label: translations?.hero?.stats?.collegesListed || 'Colleges Listed' }
-            ].map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 1 + index * 0.1 }}
-                className="text-center space-y-2"
-              >
-                <div className="text-2xl sm:text-3xl font-bold text-neon-cyan">
-                  {stat.number}
-                </div>
-                <div className="text-gray-400 text-sm uppercase tracking-wider">
-                  {stat.label}
-                </div>
-              </motion.div>
-            ))}
           </motion.div>
         </motion.div>
 

@@ -95,14 +95,115 @@ function ChatMessage({ message }: ChatMessageProps) {
             : 'bg-gray-800/60 border border-gray-700 text-gray-100'
         }`}>
           <div className="whitespace-pre-wrap text-sm leading-relaxed">
-            {message.content}
+            {typeof message.content === 'string' && message.content.startsWith('{') 
+              ? (() => {
+                  try {
+                    const parsed = JSON.parse(message.content)
+                    
+                    // Format 1: {response: {title, description, options}}
+                    if (parsed.response && typeof parsed.response === 'object') {
+                      return (
+                        <div>
+                          {parsed.response.title && <div className="font-semibold mb-2">{parsed.response.title}</div>}
+                          {parsed.response.description && <div className="mb-3">{parsed.response.description}</div>}
+                          {parsed.response.options && Array.isArray(parsed.response.options) && (
+                            <div className="space-y-2">
+                              {parsed.response.options.map((option: any, idx: number) => (
+                                <div key={idx} className="text-sm text-gray-300">• {option.text}</div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    }
+                    
+                    // Format 2: {welcomeMessage, availableServices, nextSteps}
+                    if (parsed.welcomeMessage || parsed.availableServices || parsed.nextSteps) {
+                      return (
+                        <div>
+                          {parsed.welcomeMessage && <div className="mb-3">{parsed.welcomeMessage}</div>}
+                          {parsed.availableServices && Array.isArray(parsed.availableServices) && (
+                            <div className="mb-3">
+                              <div className="font-semibold mb-2">Available Services:</div>
+                              <div className="space-y-1">
+                                {parsed.availableServices.map((service: string, idx: number) => (
+                                  <div key={idx} className="text-sm text-gray-300">• {service}</div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          {parsed.nextSteps && Array.isArray(parsed.nextSteps) && (
+                            <div>
+                              <div className="font-semibold mb-2">Next Steps:</div>
+                              <div className="space-y-1">
+                                {parsed.nextSteps.map((step: string, idx: number) => (
+                                  <div key={idx} className="text-sm text-gray-300">• {step}</div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )
+                    }
+                    
+                    // Format 3: Generic object - render key-value pairs nicely
+                    if (Object.keys(parsed).length > 0) {
+                      return (
+                        <div className="space-y-2">
+                          {Object.entries(parsed).map(([key, value]: [string, any], idx: number) => {
+                            if (Array.isArray(value)) {
+                              return (
+                                <div key={idx}>
+                                  <div className="font-semibold text-sm capitalize mb-1">{key.replace(/([A-Z])/g, ' $1')}:</div>
+                                  <div className="space-y-1">
+                                    {value.map((item: any, itemIdx: number) => (
+                                      <div key={itemIdx} className="text-sm text-gray-300 ml-2">
+                                        • {typeof item === 'object' ? JSON.stringify(item) : item}
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )
+                            }
+                            if (typeof value === 'object') {
+                              return (
+                                <div key={idx}>
+                                  <div className="font-semibold text-sm capitalize">{key.replace(/([A-Z])/g, ' $1')}:</div>
+                                  <div className="text-sm text-gray-300 ml-2">{JSON.stringify(value, null, 2)}</div>
+                                </div>
+                              )
+                            }
+                            return (
+                              <div key={idx} className="text-sm">
+                                <span className="font-semibold capitalize">{key.replace(/([A-Z])/g, ' $1')}:</span>
+                                <span className="text-gray-300 ml-2">{value}</span>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      )
+                    }
+                    
+                    // Fallback: render as formatted JSON
+                    return JSON.stringify(parsed, null, 2)
+                  } catch (e) {
+                    return message.content
+                  }
+                })()
+              : message.content
+            }
           </div>
         </div>
         <div className={`text-xs text-gray-500 mt-1 ${isUser ? 'text-right' : 'text-left'}`}>
-          {new Date(message.timestamp).toLocaleTimeString([], { 
-            hour: '2-digit', 
-            minute: '2-digit' 
-          })}
+          {(() => {
+            try {
+              const date = new Date(message.timestamp)
+              if (isNaN(date.getTime())) return 'Just now'
+              return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            } catch (e) {
+              return 'Just now'
+            }
+          })()}
         </div>
       </div>
     </motion.div>

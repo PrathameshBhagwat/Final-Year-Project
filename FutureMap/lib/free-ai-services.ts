@@ -9,17 +9,51 @@ import { HfInference } from '@huggingface/inference'
 
 function extractJSON(text: string): any {
   try {
-    return JSON.parse(text);
+    // First, try direct JSON parsing
+    return JSON.parse(text)
   } catch (e) {
-    const match = text.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
-    if (match) {
+    // Try to extract JSON from markdown code blocks
+    const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/)
+    if (jsonMatch) {
       try {
-        return JSON.parse(match[0]);
-      } catch (innerError) {
-        throw new Error('Failed to parse extracted JSON');
+        return JSON.parse(jsonMatch[1].trim())
+      } catch (e2) {
+        // Continue to next extraction method
       }
     }
-    throw new Error('No valid JSON found in response');
+
+    // Try to find JSON object or array using a more robust regex
+    // Look for { ... } or [ ... ] patterns
+    const objectMatch = text.match(/\{[\s\S]*?\n\}/)
+    if (objectMatch) {
+      try {
+        return JSON.parse(objectMatch[0])
+      } catch (e3) {
+        // Continue to next extraction method
+      }
+    }
+
+    // Try simple regex for JSON-like structures
+    const match = text.match(/\{[\s\S]*\}|\[[\s\S]*\]/)
+    if (match) {
+      try {
+        return JSON.parse(match[0])
+      } catch (innerError) {
+        // Last attempt: try to extract JSON that might have trailing commas or other issues
+        let jsonStr = match[0]
+        // Remove trailing commas
+        jsonStr = jsonStr.replace(/,\s*([}\]])/g, '$1')
+        try {
+          return JSON.parse(jsonStr)
+        } catch (e4) {
+          console.error('Failed to parse JSON after cleanup:', jsonStr)
+          throw new Error(`Failed to parse extracted JSON: ${innerError instanceof Error ? innerError.message : 'Unknown error'}`)
+        }
+      }
+    }
+    
+    console.error('Could not find valid JSON in response:', text.substring(0, 200))
+    throw new Error('No valid JSON found in response')
   }
 }
 
@@ -430,7 +464,47 @@ Provide detailed, accurate analysis. Return ONLY valid JSON, no additional text.
       maxTokens: 3000
     })
 
-    const analysisData = extractJSON(response.content)
+    // Extract and validate JSON
+    let analysisData: any
+    try {
+      analysisData = extractJSON(response.content)
+    } catch (parseError) {
+      console.error('JSON parse error:', parseError)
+      // Return a valid but basic structure if parsing fails
+      analysisData = {
+        personalInfo: { name: 'Unknown', email: '', phone: '', linkedin: '', location: '' },
+        experience: [],
+        education: [],
+        skills: { technical: [], soft: [], tools: [], languages: [] },
+        projects: [],
+        summary: {
+          totalExperience: 'Unknown',
+          seniorityLevel: 'mid',
+          primaryRole: 'Professional',
+          keyStrengths: [],
+          careerFocus: 'Career Development',
+          salaryRange: 'Unknown'
+        },
+        recommendations: {
+          improvementAreas: [],
+          missingSkills: [],
+          careerAdvice: [],
+          jobSearchTips: []
+        }
+      }
+    }
+
+    // Validate and ensure required fields exist
+    analysisData = {
+      personalInfo: analysisData?.personalInfo || { name: 'Unknown', email: '', phone: '', linkedin: '', location: '' },
+      experience: Array.isArray(analysisData?.experience) ? analysisData.experience : [],
+      education: Array.isArray(analysisData?.education) ? analysisData.education : [],
+      skills: analysisData?.skills || { technical: [], soft: [], tools: [], languages: [] },
+      projects: Array.isArray(analysisData?.projects) ? analysisData.projects : [],
+      summary: analysisData?.summary || { totalExperience: 'Unknown', seniorityLevel: 'mid', primaryRole: 'Professional', keyStrengths: [], careerFocus: 'Career Development', salaryRange: 'Unknown' },
+      recommendations: analysisData?.recommendations || { improvementAreas: [], missingSkills: [], careerAdvice: [], jobSearchTips: [] }
+    }
+
     return analysisData
   }
 

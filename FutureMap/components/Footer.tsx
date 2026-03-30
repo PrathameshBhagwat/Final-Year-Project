@@ -6,10 +6,6 @@ import {
   Mail, 
   Phone, 
   MapPin,
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin,
   Github,
   ArrowUp
 } from 'lucide-react'
@@ -24,37 +20,17 @@ const Footer = () => {
       { name: translations?.footer?.features || 'Features', href: '#features' },
       { name: translations?.features?.careerQuiz?.name || 'Career Quiz', href: '#quiz' },
       { name: translations?.features?.careerTree?.name || '3D Career Tree', href: '#career-map' },
-      { name: translations?.features?.collegeFinder?.name || 'College Finder', href: '#colleges' },
-      { name: 'Timeline Tracker', href: '#timeline' }
-    ],
-    company: [
-      { name: translations?.footer?.about || 'About', href: '/about' },
-      { name: translations?.footer?.team || 'Team', href: '/team' },
-      { name: 'Careers', href: '/careers' },
-      { name: translations?.footer?.press || 'Press', href: '/press' },
-      { name: translations?.footer?.contact || 'Contact', href: '/contact' }
+      { name: translations?.features?.collegeFinder?.name || 'College Finder', href: '#colleges' }
     ],
     resources: [
       { name: translations?.footer?.help || 'Help', href: '/help' },
       { name: 'Study Materials', href: '/materials' },
-      { name: 'Career Guides', href: '/guides' },
-      { name: translations?.footer?.blog || 'Blog', href: '/blog' },
-      { name: 'API Docs', href: '/api' }
-    ],
-    legal: [
-      { name: translations?.footer?.privacy || 'Privacy Policy', href: '/privacy' },
-      { name: translations?.footer?.terms || 'Terms of Service', href: '/terms' },
-      { name: 'Cookie Policy', href: '/cookies' },
-      { name: 'GDPR', href: '/gdpr' }
+      { name: translations?.footer?.team || 'Team', href: '/team' }
     ]
   }
 
   const socialLinks = [
-    { name: 'Facebook', icon: Facebook, href: '#', color: 'hover:text-blue-400' },
-    { name: 'Twitter', icon: Twitter, href: '#', color: 'hover:text-blue-400' },
-    { name: 'Instagram', icon: Instagram, href: '#', color: 'hover:text-pink-400' },
-    { name: 'LinkedIn', icon: Linkedin, href: '#', color: 'hover:text-blue-600' },
-    { name: 'GitHub', icon: Github, href: '#', color: 'hover:text-gray-300' }
+    { name: 'GitHub', icon: Github, href: 'https://github.com/PrathameshBhagwat/Final-Year-Project', color: 'hover:text-gray-300' }
   ]
 
   const scrollToTop = () => {
@@ -118,7 +94,7 @@ const Footer = () => {
                   className="flex items-center space-x-3 text-gray-300 text-sm"
                 >
                   <Mail className="h-4 w-4 text-neon-cyan" />
-                  <span>sudanva7@gmail.com</span>
+                  <span>bhagwatprathamesh2626@gmail.com</span>
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
@@ -128,7 +104,7 @@ const Footer = () => {
                   className="flex items-center space-x-3 text-gray-300 text-sm"
                 >
                   <Phone className="h-4 w-4 text-neon-cyan" />
-                  <span>+91 7204686919</span>
+                  <span>+91 9834820606</span>
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
@@ -138,7 +114,7 @@ const Footer = () => {
                   className="flex items-center space-x-3 text-gray-300 text-sm"
                 >
                   <MapPin className="h-4 w-4 text-neon-cyan" />
-                  <span>123 Innovation Drive, Tech City</span>
+                  <span>Balewadi, Pune, 411045</span>
                 </motion.div>
               </div>
             </div>
@@ -154,9 +130,7 @@ const Footer = () => {
                   className="text-white font-semibold uppercase text-sm tracking-wider"
                 >
                   {category === 'product' ? translations.footer.features : 
-                   category === 'company' ? 'Company' : 
                    category === 'resources' ? translations.footer.support : 
-                   category === 'legal' ? translations.footer.legal : 
                    category.charAt(0).toUpperCase() + category.slice(1)}
                 </motion.h3>
                 <ul className="space-y-3">
@@ -255,7 +229,7 @@ const Footer = () => {
               viewport={{ once: true }}
               className="text-gray-400 text-sm"
             >
-              © {currentYear} CareerGuide. {translations?.footer?.copyright || 'All rights reserved.'} Built with ❤️ for students everywhere.
+              © {currentYear} FutureMap. {translations?.footer?.copyright || 'All rights reserved.'}
             </motion.p>
 
             <motion.button

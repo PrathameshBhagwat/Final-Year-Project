@@ -227,7 +227,7 @@ export const defaultTranslations: TranslationData = {
   },
   
   hero: {
-    title: 'Your Personalized Career & College Guide',
+    title: 'AI-Powered Personalized Learning & Career Guidance',
     subtitle: 'Discover your path with AI-powered quizzes, 3D career maps & nearby government college suggestions.',
     ctaStart: 'Start Your Quiz',
     ctaLearn: 'Learn How It Works',
